@@ -2,6 +2,7 @@
 import os.path
 from socket import *
 import base64
+import sys
 
 # 文本传输
 def SendTXT(serverName:str , serverPort:int , file_path):
@@ -88,6 +89,26 @@ def SendBin(serverName:str , serverPort:int , file_path):
     print(flag_message)
 
 if __name__ == '__main__':
+    # 可采用命令行自定义ip和端口号
+    print("输入格式为\npython 服务器ip 文本传输端口 二进制传输端口\n默认值分别为 127.0.0.1 12000 12001")
+    addr = sys.argv
+    if len(addr) >= 2 :
+        print("本次输入值为" , sys.argv[1:])
+    else:
+        print("未输入参数，采用默认值")
+    serverName = '127.0.0.1'
+    serverPort_TXT = 12000
+    serverPort_Bin = 12001
+    if len(addr) >= 2:
+        serverName = str(addr[1])
+        print("已设置服务器ip为" , serverName)
+    if len(addr) >= 3:
+        serverPort_TXT = int(addr[2])
+        print("已设置服务器文本传输端口为" , serverPort_TXT)
+    if len(addr) >= 4:
+        serverPort_Bin = int(addr[3])
+        print("已设置服务器二进制传输端口为" , serverPort_Bin)
+
     # 主程序进行文字引导，输入对应数字进入，分别有三种模式，前两种为主动选择文本传输还是二进制传输，第三种为整个文件夹中的文件自动选择二进制传输或者文本传输
     # 若输入不合法会引导重新输入或主动结束程序
     flag = input("输入相应数字来选择功能:\n1. 文本传输\t2. 二进制文件传输\t3. 传输文件下的多个文件\n")
@@ -98,27 +119,27 @@ if __name__ == '__main__':
         while flag != '1' and flag != '2' and flag != '3':
             flag = input("输入相应数字来选择功能:\n1. 使用实例样本\t2. 使用默认文件夹\t3. 自定义路径\n")
         if mode == '1' :
-            SendTXT('127.0.0.1' , 12000 ,'D://from//tatakai.txt')
+            SendTXT(serverName , serverPort_TXT ,'D://from//tatakai.txt')
         elif mode == '2' :
             file_path = input("请输入文件名:(要求带后缀，并且该文件存在)\n")
             file_path = 'D://from//' + file_path
-            SendTXT('127.0.0.1', 12000, file_path)
+            SendTXT(serverName, serverPort_TXT, file_path)
         elif mode == '3' :
             file_path = input("请输入完整路径名(符合python语法)\n")
-            SendTXT('127.0.0.1', 12000, file_path)
+            SendTXT(serverName, serverPort_TXT, file_path)
     elif flag == '2':
         mode = input("输入相应数字来选择功能:\n1. 使用实例样本\t2. 使用默认文件夹\t3. 自定义路径\n")
         while flag != '1' and flag != '2' and flag != '3':
             flag = input("输入相应数字来选择功能:\n1. 使用实例样本\t2. 使用默认文件夹\t3. 自定义路径\n")
         if mode == '1':
-            SendBin('127.0.0.1', 12001, 'D://from//111.docx')
+            SendBin(serverName, serverPort_Bin, 'D://from//111.docx')
         elif mode == '2':
             file_path = input("请输入文件名:(要求带后缀，并且该文件存在)\n")
             file_path = 'D://from//' + file_path
-            SendBin('127.0.0.1', 12001, file_path)
+            SendBin(serverName, serverPort_Bin, file_path)
         elif mode == '3':
             file_path = input("请输入完整路径名(符合python语法)\n")
-            SendBin('127.0.0.1', 12001, file_path)
+            SendBin(serverName, serverPort_Bin, file_path)
     elif flag == '3':
         folder_path = input("请输入指定的文件夹路径(符合python语法)\n")
         files = os.listdir(folder_path)
@@ -128,6 +149,6 @@ if __name__ == '__main__':
             print(f"File Path: {file_path}")
             print(f"File Type: {file_extension}")
             if file_extension == '.py' or file_extension == 'c' or file_extension == 'cpp' or file_extension == '.txt' or file_extension == '.pdf' or file_extension == '.html' or file_extension == '.htm' or file_extension == '.xml' or file_extension == '.json' or file_extension == '.csv':
-                SendTXT('127.0.0.1', 12000, file_path)
+                SendTXT('127.0.0.1', serverPort_TXT, file_path)
             elif file_extension == '.exe' or file_extension == '.docx' or file_extension == '.doc' or file_extension == '.bin' or file_extension == '.dll' or file_extension == '.so' or file_extension == '.dat' or file_extension == '.png' or file_extension == '.jpg' or file_extension == '.jpeg' or file_extension == '.img' or file_extension == '.mp3' or file_extension == '.mp4':
-                SendBin('127.0.0.1', 12001, file_path)
+                SendBin('127.0.0.1', serverPort_Bin, file_path)
